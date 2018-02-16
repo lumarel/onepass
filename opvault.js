@@ -260,6 +260,10 @@ exports.findByURL = function(browserurl) {
     var browserhost = extractHost(browserurl);
 
     for (var i = 0; i < entries.length; i++) {
+        if (entries[i].category !== '001') {
+            continue;
+        }
+
         var overview = entries[i].overview;
 
         if (!overview.hasOwnProperty('url')) {
