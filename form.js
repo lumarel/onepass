@@ -45,10 +45,12 @@ exports.fill = function(payload, send) {
 }
 
 function getUsername(entry) { 
-    for (var i = 0; i < entry.data.fields.length; i++) {
-        var field = entry.data.fields[i];
-        if (field.name == 'username') {
-            return field.value;
+    if (entry.data.hasOwnProperty('fields')) {
+        for (var i = 0; i < entry.data.fields.length; i++) {
+	    var field = entry.data.fields[i];
+	    if (field.name == 'username') {
+	        return field.value;
+	    }
         }
     }
     return null;
@@ -106,7 +108,7 @@ function mapEntryToForm(entry, payload) {
         for (var i = 0; i < entry.data.fields.length; i++) {
             field = entry.data.fields[i];
             var name = field.name ? field.name : field.designation;
-            if (name == "username") {
+            if (name == "username" || name == "email") {
                 username = field.value;
                 opids = findUserInputs(payload);
 				opids.forEach(opid => {
