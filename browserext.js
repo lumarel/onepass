@@ -4,7 +4,7 @@ var winston = require('winston');
 
 var protocol = require('./protocol');
 
-var portNumbers = [6263, 10196, 14826, 24866, 
+var portNumbers = [6263, 10196, 14826, 24866,
     25012, 38156, 46365, 49806, 55735, 59488];
 
 var extId = 'chrome-extension://aomjjhallfgjeglblehebfpbcfeobpgk';
@@ -50,5 +50,3 @@ function startServer(port) {
 
     // winston.info("Websocket server started on port " + port)
 }
-
-

@@ -52,22 +52,22 @@ function loadJson(filename) {
 
 function deriveKey(password, profile) {
     var saltbin = Buffer.from(profile.salt, 'base64');
-    return crypto.pbkdf2Sync(password, saltbin, 
+    return crypto.pbkdf2Sync(password, saltbin,
         profile.iterations, 64, 'sha512');
 }
 
 function decryptItemKey(base64blob, masterkey) {
 
-    var encryptionkey = Buffer.allocUnsafe(32); 
+    var encryptionkey = Buffer.allocUnsafe(32);
     masterkey.copy(encryptionkey, 0, 0, 32);
-    var hmackey = Buffer.allocUnsafe(32); 
+    var hmackey = Buffer.allocUnsafe(32);
     masterkey.copy(hmackey, 0, 32, 64);
 
     var bin = Buffer.from(base64blob, 'base64');
 
-    var aesiv = Buffer.allocUnsafe(16); 
+    var aesiv = Buffer.allocUnsafe(16);
     bin.copy(aesiv);
-    var hmac = Buffer.allocUnsafe(32); 
+    var hmac = Buffer.allocUnsafe(32);
     bin.copy(hmac, 0, bin.length - 32);
 
     var cryptohmac = crypto.createHmac('sha256', hmackey);
@@ -75,7 +75,7 @@ function decryptItemKey(base64blob, masterkey) {
     bin.copy(tohash, 0, 0, tohash.length);
     cryptohmac.update(tohash);
 
-    var computedhmac = cryptohmac.digest('hex');  
+    var computedhmac = cryptohmac.digest('hex');
 
     if (computedhmac != hmac.toString('hex')) {
         throw Error("Couldn't validate hmac");
@@ -89,20 +89,19 @@ function decryptItemKey(base64blob, masterkey) {
     return decoded;
 }
 
-
 function decryptOpdata(base64opdata, key) {
     var opdatabin = Buffer.from(base64opdata, 'base64');
-    
+
     var prefix = Buffer.from('opdata01');
     if(opdatabin.compare(prefix, 0, 8, 0, 8) != 0) {
         throw Error("Invalid prefix");
     }
 
-    var aesiv = Buffer.allocUnsafe(16); 
-    var hmac = Buffer.allocUnsafe(32); 
+    var aesiv = Buffer.allocUnsafe(16);
+    var hmac = Buffer.allocUnsafe(32);
 
-    var encryptionkey = Buffer.allocUnsafe(32); 
-    var hmackey = Buffer.allocUnsafe(32); 
+    var encryptionkey = Buffer.allocUnsafe(32);
+    var hmackey = Buffer.allocUnsafe(32);
 
     key.copy(encryptionkey, 0, 0, 32);
     key.copy(hmackey, 0, 32, 64);
@@ -118,7 +117,7 @@ function decryptOpdata(base64opdata, key) {
     opdatabin.copy(tohash, 0, 0, tohash.length);
     cryptohmac.update(tohash);
 
-    var computedhmac = cryptohmac.digest('hex');  
+    var computedhmac = cryptohmac.digest('hex');
 
     if (computedhmac != hmac.toString('hex')) {
         return;
@@ -139,7 +138,7 @@ function decryptOpdata(base64opdata, key) {
 function decryptBlob(blob, key, iv) {
     var decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
     decipher.setAutoPadding(false);
-    var decoded = 
+    var decoded =
         Buffer.concat([ decipher.update(blob), decipher.final()]);
     return decoded;
 }
@@ -201,12 +200,12 @@ exports.unlockKeychain = function() {
             var enc = band[uuid].o;
             var cleartext = decryptOpdata(enc, overviewKey);
             overviewJson = cleartext.toString('utf8');
-            entries.push({ 
+            entries.push({
                     overview: JSON.parse(overviewJson),
                     data: band[uuid],
                     category: band[uuid].category
             });
-        } 
+        }
     }
 }
 
@@ -218,12 +217,12 @@ exports.findByKeyword = function(keyword) {
         var overview = entries[i].overview;
         if (!overview.hasOwnProperty('title')) continue;
 
-        var matchTitle = 
+        var matchTitle =
             overview.title.toLowerCase().indexOf(keyword) != -1;
 
         var matchUrl = false;
         if (overview.hasOwnProperty('url')) {
-            matchUrl = 
+            matchUrl =
                 overview.url.toLowerCase().indexOf(keyword) != -1;
         }
 
@@ -233,7 +232,7 @@ exports.findByKeyword = function(keyword) {
             var cleartext = decryptOpdata(entries[i].data.d, itemKey);
 
             results.push({
-                    overview: overview, 
+                    overview: overview,
                     data: JSON.parse(cleartext),
                     category: entries[i].category
             });
@@ -283,7 +282,7 @@ exports.findByURL = function(browserurl) {
             var cleartext = decryptOpdata(entries[i].data.d, itemKey);
 
             results.push({
-                    overview: overview, 
+                    overview: overview,
                     data: JSON.parse(cleartext),
                     category: entries[i].category
             });
@@ -292,4 +291,3 @@ exports.findByURL = function(browserurl) {
 
     return results;
 }
-

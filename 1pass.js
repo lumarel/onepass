@@ -59,7 +59,7 @@ function printEntry(entry, verbose) {
     var detailed = false;
 
     var title = overview.title ? overview.title : overview.url
-    console.log("  " + title); 
+    console.log("  " + title);
 
     //console.log("  Category: " + entry.category);
 

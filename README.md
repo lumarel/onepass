@@ -1,19 +1,25 @@
 # onepass
+
 1Password client for linux
 
 ## why
-This adds support for the new [OPVault](https://support.1password.com/opvault-design/) data format and has basic support for the 1Password browser extension. 
+
+This adds support for the new [OPVault](https://support.1password.com/opvault-design/) data format and has basic support for the 1Password browser extension.
 
 ## install
+
 Build the gtkmenu using `./build-gtkmenu.sh` and run using `node 1pass`
 
-## run 
-Use --prompt for command line mode. Or no option to start browser extension mode. 
+## run
 
-```
+Use --prompt for command line mode. Or no option to start browser extension mode.
+
+You have to locate your current working directory, where the 1Password folder is (the *.opvault is in this folder)
+
+```bash
 ~/workspace/onepass$ node 1pass.js --prompt
 info: Unlocking vault...
-Password: 
+Password:
 Keychain unlocked.
 
 Keyword: gmail

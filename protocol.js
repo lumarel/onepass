@@ -25,7 +25,7 @@ exports.handleMessage = function(connection, message) {
             message.payload = encpayload;
         }
         connection.send(JSON.stringify(message));
-        winston.debug("[SENT]", message.action); 
+        winston.debug("[SENT]", message.action);
     }
 
     if (message.action == "hello") {
@@ -35,7 +35,7 @@ exports.handleMessage = function(connection, message) {
         }
         else {
             winston.info("No secret stored, starting pairing process");
-            send({ action: "authNew", 
+            send({ action: "authNew",
                    payload: { method: "auth-sma-hmac256",
                               alg: "aead-cbchmac-256",
                               code: 1664 }
@@ -57,16 +57,16 @@ exports.handleMessage = function(connection, message) {
     }
     else if (message.action == "authVerify") {
         if (m4 != message.payload.M4) {
-            winston.error("Browser authentication failed"); 
+            winston.error("Browser authentication failed");
             process.exit();
         }
 
-        send({ action: "welcome", 
+        send({ action: "welcome",
                payload: { alg: "aead-cbchmac-256" } });
         winston.info("Succesfully connected to browser extenstion.");
     }
     else if (message.action == "showPopup") {
-        msg = { action: "collectDocuments", 
+        msg = { action: "collectDocuments",
             payload: { context: uuidV1()}};
         send(msg);
     }
@@ -75,7 +75,7 @@ exports.handleMessage = function(connection, message) {
     }
 
     function doAuthBegin() {
-        send({ action: "authBegin", 
+        send({ action: "authBegin",
                payload: { method: "auth-sma-hmac256",
                           alg: "aead-cbchmac-256" }
             });
@@ -97,7 +97,7 @@ exports.handleMessage = function(connection, message) {
         var h = sjcl.hash.sha256.hash(sjcl.bitArray.concat(d, b))
           , h = a.encrypt(h);
         computedM3 = sjcl.codec.base64.fromBits(h, !0, !0);
- 
+
         outpayload = { M3: computedM3, cs: cs, method: payload.method };
 
         winston.debug("Sending computed payload: ", outpayload);
@@ -115,7 +115,6 @@ exports.handleMessage = function(connection, message) {
         a = a.encrypt(f.concat(h).concat(hmacBits)),
         payloadKey = new na(c, a);
     }
-
 }
 
 // encryption stuff
@@ -208,8 +207,6 @@ function na(a, c) {
         }
     }
 }
-
-
 
 function saveSecret(secret) {
     fs.writeFile('.secret', secret, function(err) {

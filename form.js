@@ -44,7 +44,7 @@ exports.fill = function(payload, send) {
     }
 }
 
-function getUsername(entry) { 
+function getUsername(entry) {
     if (entry.data.hasOwnProperty('fields')) {
         for (var i = 0; i < entry.data.fields.length; i++) {
 	    var field = entry.data.fields[i];
@@ -89,7 +89,7 @@ function sendFillResult(result, payload, send) {
         payload.script.push(["fill_by_opid", opid, value]);
     }
     payloadstr = JSON.stringify(payload);
-    send({ action: "executeFillScript", 
+    send({ action: "executeFillScript",
            payload: payloadstr });
     winston.info(mappings.length + " fill instruction(s) sent to browser.");
 }
@@ -135,7 +135,7 @@ function mapEntryToForm(entry, payload) {
             for (var i = sortedfields.length - 1; i >= 0; i--) {
                 var field = sortedfields[i];
                 if (field.opid == passopid && i > 0) {
-                    var userfield = sortedfields[i - 1];  
+                    var userfield = sortedfields[i - 1];
                     mappings.push({opid: userfield.opid, value: username });
                 }
             }
